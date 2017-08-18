@@ -1,4 +1,50 @@
 <header>
+	<nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <a class="navbar-brand" href="#">Expand at sm</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample03">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+        	<% if (user) { %>
+        	<li class="nav-item">
+        		<a class="nav-link" href="/profile" data-toggle="tooltip" data-placement="bottom" title="Perfil">
+							<%= user.displayName %>
+						</a>
+        	</li>
+        	
+					<li class="nav-item">
+						<a class="nav-link" href="/logout" data-toggle="tooltip" data-placement="bottom" title="Log-out">
+			  			<i class="fa fa-sign-out fa-2x" aria-hidden="true"></i>
+			  		</a>
+					</li>
+					
+	        <% }else { %>
+	        <li class="nav-item">
+	        	<a class="nav-link" href="/login/facebook"><i class="fa fa-sign-in fa-2x" aria-hidden="true"></i></a>
+	        </li>
+	        	
+	        <% } %>   
+        </ul>
+             
+      </div>
+    </nav>
+</header>
+
+
+<!--header>
 	<div class="col-md-12">
 		<div class="container">
 			<nav class="navbar navbar-default">
@@ -29,4 +75,4 @@
 		</nav>
 		</div>
 	</div>
-</header>
+</header-->

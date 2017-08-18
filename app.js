@@ -9,6 +9,7 @@ const combined = require('morgan')('combined')
 const cookieParser = require('cookie-parser')()
 const session = require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
 
+
 const routes = require('./routes').routes
 const passport = require('./routes').passport
 
@@ -38,4 +39,4 @@ app.use("/public",express.static('public'));
 
 app.use('/', routes)
 
-module.exports = app
+module.exports = {app,session}

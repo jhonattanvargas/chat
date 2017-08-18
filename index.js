@@ -1,9 +1,10 @@
 'use strict'
 
 const config = require('./config')
-const app = require('./app')
+const app = require('./app').app
+const server = require('http').Server(app)
+const io = require('./io')(require('./app').session,server)
 
-
-app.listen(config.port, () =>{
-    console.log(`Servidor corriendo en ${config.base_url}`)
+server.listen(config.port,()=>{
+  console.log(`Server runing on ${config.base_url}.`)
 })
