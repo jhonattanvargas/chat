@@ -13,7 +13,7 @@
     		<% if (!user) { %>
 				<p>Bienvenido! Porfavor inicia sesión con <a href="/login/facebook">Facebook</a>.</p>
 			<% } else { %>
-				<p>Hola, <%= user.username %>. visita tu perfil! <a href="/profile">profile</a>.</p>
+				<p>Hola, <%= user.displayName %>. visita tu perfil! <a href="/profile">profile</a>.</p>
 			<% } %>
     	</div>
   </div>

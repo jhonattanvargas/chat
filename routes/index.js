@@ -18,9 +18,12 @@ const User = require('../models/user').User
 passport.use(new Strategy({
 		clientID: config.facebook.clientID,
 	  clientSecret: config.facebook.clientSecret,
-	  callbackURL: config.facebook.callbackURL
+	  callbackURL: config.facebook.callbackURL,
+	  profileFields: ['id', 'displayName', 'picture.type(large)','gender','birthday','profileUrl']
 	}, 
 	(accessToken, refreshToken, profile, cb) => {
+
+		console.log(profile)
 		//busca el usuario en la bd
 		User.findOne({id: profile.id}, (err, user) => {
       if(err) throw(err)
@@ -30,6 +33,9 @@ passport.use(new Strategy({
 	  	var user = new User({
 	      id          : profile.id,
 	      displayName : profile.displayName,
+	      gender			: profile.gender,
+	      picture			: profile.photos[0].value,
+	      profileUrl	: profile.profileUrl,
 	      exp         : 0,
 	      nivel       : 1
 	    })
