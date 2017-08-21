@@ -1,0 +1,11 @@
+facebook graph API
+
+
+//array with friends using the application
+//{id, name}
+https://graph.facebook.com:443/v2.10/profile.id/friends?access_token=
+
+//array with all friends can be tagged
+//{id,name,picture}
+//id is not the same id of previous method
+https://graph.facebook.com:443/v2.10/profile.id/taggable_friends?access_token=

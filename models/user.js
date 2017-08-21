@@ -9,6 +9,7 @@ var user_schema = new mongoose.Schema({
   gender			: String,
   picture			: String,
   profileUrl	: String,
+  friends			: String,
   exp         : Number,
   nivel       : Number
 })
