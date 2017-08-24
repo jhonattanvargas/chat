@@ -6,6 +6,7 @@ mongoose.connect('mongodb://test-app:test-app@ds147995.mlab.com:47995/jhonattan-
 var user_schema = new mongoose.Schema({
   id          : String, 
   displayName : String,
+  email				: String,
   gender			: String,
   picture			: String,
   profileUrl	: String,

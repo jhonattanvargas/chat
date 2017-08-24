@@ -6,6 +6,7 @@ const connectEnsureLogin = require('connect-ensure-login')
 
 //add require controllers
 const ctrl = require('../controllers')
+const api = require('../controllers/api')
 
 //passport for authentication
 const config = require('../config')
@@ -20,11 +21,11 @@ passport.use(new Strategy({
 		clientID: config.facebook.clientID,
 	  clientSecret: config.facebook.clientSecret,
 	  callbackURL: config.facebook.callbackURL,
-	  profileFields: ['id', 'displayName', 'picture.type(large)','gender','birthday','profileUrl','friends']
+	  profileFields: ['id', 'displayName', 'picture.type(large)','gender','birthday','profileUrl','friends','email']
 	}, 
 	(accessToken, refreshToken, profile, cb) => {
 		let friends;
-		facebookData.getFbData(accessToken, `/v2.10/${profile.id}/friends`, function(data){
+		facebookData.getFbData(accessToken, `/v2.10/${profile.id}/friends`, (data) => {
         console.log(data)
     })
 		console.log(profile)
@@ -37,6 +38,7 @@ passport.use(new Strategy({
 	  	var user = new User({
 	      id          : profile.id,
 	      displayName : profile.displayName,
+	      email				: profile.emails[0].value,
 	      gender			: profile.gender,
 	      picture			: profile.photos[0].value,
 	      profileUrl	: profile.profileUrl,
@@ -61,13 +63,22 @@ passport.deserializeUser( (obj, cb) => {
 })
 
 //add routes from page
-routes.get('/', ctrl.index)
-routes.get('/inicio', ctrl.inicio)
+routes.get('/no-access',ctrl.noAccess)
+routes.get('/',connectEnsureLogin.ensureLoggedIn('/external'), ctrl.index)
+routes.get('/external', ctrl.external)
 routes.get('/facebook-error', ctrl.facebookError)
-routes.get('/login/facebook', passport.authenticate('facebook',{scope: 'user_friends'}), ctrl.loginFacebook)
-routes.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/facebook-error' }), ctrl.loginFacebookReturn)
+routes.get('/login/facebook', passport.authenticate('facebook',{scope: ['user_friends','email']}), ctrl.loginFacebook)
+routes.get('/login/facebook/return', passport.authenticate('facebook', {successReturnToOrRedirect: '/profile', failureRedirect: '/facebook-error' }), ctrl.loginFacebookReturn)
 routes.get('/logout', ctrl.logout)
-routes.get('/profile', connectEnsureLogin.ensureLoggedIn(), ctrl.profile)
+routes.get('/profile', connectEnsureLogin.ensureLoggedIn('/external'), ctrl.profile)
+routes.get('/room/:id',connectEnsureLogin.ensureLoggedIn('/external'), ctrl.room)
+
+
+
+//add routes from api
+routes.post('/api/room/add',connectEnsureLogin.ensureLoggedIn('/no-access'),api.addRoom)
+routes.get('/api/room',connectEnsureLogin.ensureLoggedIn('/no-access'),api.getRooms)
+routes.get('/api/room/:id',connectEnsureLogin.ensureLoggedIn('/no-access'),api.getRoom)
 
 module.exports = {
 	passport,

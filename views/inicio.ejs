@@ -8,15 +8,107 @@
 	<body>
 	<%include header %>
 
-	<div class="col-md-12">
-    	<div class="container">
+	<div class="container">
+    	<div class="col-md-12">
     		<% if (!user) { %>
 				<p>Bienvenido! Porfavor inicia sesión con <a href="/login/facebook">Facebook</a>.</p>
 			<% } else { %>
 				<p>Hola, <%= user.displayName %>. visita tu perfil! <a href="/profile">profile</a>.</p>
+				<table id="rooms" class="table table-hover table-responsive table-striped">
+					<tr>
+						<th>Sala</th>
+						<th>onlines</th>
+					</tr>
+				</table>
+				<input id="roomName" type="text" class="form-control"  />
+				<br/>
+				<a href="javascript:void(0)" class="btn btn-primary" onclick="createRoom()">Crear Sala</a>
 			<% } %>
     	</div>
   </div>
 	<%include footer %>
 	</body>
 </html>
+<script>
+onload = () =>{
+
+	if (window.location.hash && window.location.hash === "#_=_") {
+  // If you are not using Modernizr, then the alternative is:
+  if (window.history && history.pushState) {
+  //if (Modernizr.history) {
+    window.history.pushState("", document.title, window.location.pathname);
+  } else {
+	    // Prevent scrolling by storing the page's current scroll offset
+	    var scroll = {
+	      top: document.body.scrollTop,
+	      left: document.body.scrollLeft
+	    };
+	    window.location.hash = "";
+	    // Restore the scroll offset, should be flicker free
+	    document.body.scrollTop = scroll.top;
+	    document.body.scrollLeft = scroll.left;
+	  }
+	}
+
+	getRooms()
+}
+
+	createRoom = () => {
+		let roomName = document.getElementById('roomName').value
+		document.getElementById('roomName').value = ''
+		let payload = {nombre:roomName}
+		fetch('/api/room/add',{method:'POST',credentials:'same-origin',body:JSON.stringify(payload),headers: {
+  		'Content-Type': 'application/json'
+  		}
+    })
+			.then( res => {
+				if(res.status === 200)
+					res.json().then( data => {
+						//console.log(data)
+						getRooms()
+					})
+				else{
+					console.log(res.status)
+					res.json().then( data => {
+						console.log(data)
+					})
+				}					
+			} )
+			.catch( err => {
+				console.log(err)
+			})
+	}
+
+	getRooms = () => {
+		fetch('/api/room',{method:'GET',credentials:'same-origin'})
+			.then( res => {
+				if(res.status === 200){
+					res.json().then( data => {
+						render(data)
+					})
+				}else{
+					console.log(res.status)
+				}
+			})
+	}
+
+	render = (data) => {
+		//console.log(data)
+		let table = document.getElementById('rooms')
+		let html = `<tr>
+									<th>Sala</th>
+									<th>onlines</th>
+								</tr>`
+
+		if(data != ''){
+			data.map( room => {
+				html += `<tr id="${room.id}">
+									<td><a href="/room/${room.id}">${room.name}</a></td>
+									<td>${room.onlines.length}</td>
+								</tr>`
+			})
+		}
+
+		table.innerHTML = html
+	}
+</script>
